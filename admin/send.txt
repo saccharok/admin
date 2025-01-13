@@ -1,0 +1,15 @@
+import pika
+import json
+
+my_dict = {'name': 'Alice', 'age': 30, 'city': 'New York'}
+message = json.dumps(my_dict)
+
+credentials = pika.PlainCredentials('sophie', 'password')
+connection = pika.BlockingConnection(pika.ConnectionParameters('0.0.0.0', credentials=credentials))
+channel = connection.channel()
+channel.queue_declare(queue='hello')
+channel.basic_publish(exchange='', 
+                      routing_key='hello',
+                      body=message)
+print(" [x] Sent 'Hello World!'")
+connection.close()

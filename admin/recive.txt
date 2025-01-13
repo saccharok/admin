@@ -1,0 +1,15 @@
+import pika
+import json
+
+credentials = pika.PlainCredentials('sophie', 'password')
+connection = pika.BlockingConnection(pika.ConnectionParameters('0.0.0.0', credentials=credentials))
+channel = connection.channel()
+channel.queue_declare(queue='hello')
+print (' [*] Waiting for messages. To exit press CTRL+C')
+def callback(ch, method, properties, body):
+    my_dict = json.loads(body)
+    print (my_dict)
+
+channel.basic_consume(on_message_callback=callback, queue='hello')
+
+channel.start_consuming()
